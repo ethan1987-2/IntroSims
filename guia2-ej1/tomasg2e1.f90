@@ -53,7 +53,6 @@ CONTAINS
 
 	real function funcdens(x)
 		implicit none
-		real (kind = 8):: funcdens
 		real (kind = 8):: x 
 		funcdens = (x-1)**2
 	end function funcdens

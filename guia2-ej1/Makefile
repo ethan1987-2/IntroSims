@@ -23,4 +23,4 @@ clean:
 	rm ./*.o ./*.mod	
 
 
-simple.o: tomasg2e1.f90 ziggurat.o
+tomasg2e1.o: ziggurat.o

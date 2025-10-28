@@ -5,7 +5,7 @@ program guia4
 	
 	integer(kind=4):: N, i, j, seed, M, PreTs,PreTmax,k,ii,repsMC
 	real, allocatable :: r(:,:),v(:,:),f(:,:)
-	real :: E, L, sig, eps, rji, deltar(3), Epot, sigrji, escf
+	real :: E, L, sig, eps, modDrji, Drji(3), E_pot, sigrji, escf
 	logical :: es, esint, recup,preterm,Tesint,pasarT
 	
 	
@@ -44,14 +44,24 @@ program guia4
 	
 	!EVALÚO POTENCIAL Y FUERZA
 	!el siguiente do esta mal porque no es suma de un j con toda otra particula
-	do j=1,N
+	do j=1,N-1
+		f(:,j)=0
+		do i=1,j-1
+			Drji= r(:,j)-r(:,i)
+			modDrji=sqrt(sum(Drji**2))
+			sigrji=(sig/modDrji)**6
+			escf= 24*eps*(-sigrji+2*sigrji**2)/modDrji
+			f(:,j)=f(:,j)+escf*Drji/modDrji
+		end do
 		do i=j+1,N
-			deltar= r(:,j)-r(:,i)
-			rji=sqrt(sum(deltar**2))
-			sigrji=(sig/rji)**6
+			Drji= r(:,j)-r(:,i)
+			modDrji=sqrt(sum(Drji**2))
+			sigrji=(sig/modDrji)**6
 			E_pot=E_pot+4*eps*(-sigrji+sigrji**2)
-			escf= 24*eps*(-sigrji+2*sigrji**2)/rji
-			f(j,i)=f(j,i)+escf*deltar/rji
+			escf= 24*eps*(-sigrji+2*sigrji**2)/modDrji
+			f(:,j)=f(:,j)+escf*Drji/modDrji
+		end do
+		
 	contains		
 			! >>> Guardar y recuperar semilla en/de archivo "seed.dat"
 
